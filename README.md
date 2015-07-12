@@ -4,13 +4,13 @@ Simple python scripts for finding the dominant colors of each frame in a video.
 
 
 ![](/documentation/eyes-average.png?raw=true "Eyes Wide Shut as a Image")
-<div align="center">Image representation of the dominant color of every frame in <i>Eyes Wide Shut</i></div>
+<div align="center">Image representation of the dominant color of every frame of <i>Eyes Wide Shut</i></div>
 
 
 ## Usage
 
 ### `main.py`
-Uses FFMpeg to extract each frame in a movie and a third party color library to conver each frame to a dominant color. Outputs JSON files for each minute in the video.
+Uses FFMpeg to extract each frame in a movie and a third party color library to convert each frame to its dominant color. Outputs JSON files for each minute in the video.
 
 ```
 python main.py --method=average "Eyes Wide Shut.mkv" --length 159
@@ -19,7 +19,7 @@ python main.py --method=average "Eyes Wide Shut.mkv" --length 159
 Name of movie and length of movie (in minutes) must be provided.
 
 Supported methods for getting dominant color:
-* `average` - Take the average of every color in the frame.
+* `average` - Take the average of every pixel in the frame.
 * `colortheif` - [Color Thief library][colorthief].
 * `colorweave` - [Colorweave library][colorweave].
 * `colorcube` - [ColorCube library][colorcube].
