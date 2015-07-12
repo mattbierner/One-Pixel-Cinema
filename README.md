@@ -4,7 +4,7 @@ Simple python scripts for finding the dominant colors of each frame in a video.
 
 
 ![](/documentation/eyes-average.png?raw=true "Eyes Wide Shut as a Image")
-Image representation of the dominant color of every frame in *Eyes Wide Shut*:
+<i align="center">Image representation of the dominant color of every frame in Eyes Wide Shut</i>
 
 
 ## Usage
