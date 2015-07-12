@@ -26,6 +26,24 @@ def hex_to_rgb(value):
     lv = len(value)
     return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
+def average_image_color(filename):
+    """https://gist.github.com/olooney/1246268"""
+    from PIL import Image
+    i = Image.open(filename)
+    h = i.histogram()
+    
+    # split into red, green, blue
+    r = h[0:256]
+    g = h[256:256*2]
+    b = h[256*2: 256*3]
+
+    # perform the weighted average of each channel:
+    # the *index* is the channel value, and the *value* is its weight
+    return [
+        sum( i*w for i, w in enumerate(r) ) / sum(r),
+        sum( i*w for i, w in enumerate(g) ) / sum(g),
+        sum( i*w for i, w in enumerate(b) ) / sum(b)]
+
 def get_dominant_frame_color(method, file):
     """Extract the dominant color for a given file."""
     if method == "colortheif":
@@ -42,10 +60,13 @@ def get_dominant_frame_color(method, file):
         colors = cc.get_colors(img)
         return colors[0]
     
-    else: # method == "colorweave" or other
+    elif method == "colorweave":
         from colorweave import palette
-        p = palette(path=file, n=1, mode="kmeans")
+        p = palette(path=file, n=1)
         return hex_to_rgb(p[0])
+        
+    else:
+        return average_image_color(file)
         
 def clear_frames(dir):
     """Delete existing frames in a directory."""
@@ -78,8 +99,8 @@ def process_frames(method, source):
     while True:
         print i
         file = source % i
-        #if not os.path.isfile(file):
-        #    break
+        if not os.path.isfile(file):
+            break
         data.append(get_dominant_frame_color(method, file))
         i = i + 1
     return data
@@ -95,7 +116,7 @@ def write_frame_data(method, movie, frameOut, dataOut, length, width, duration =
     Extract frames in groups, determine dominate color for each.
     """
     for i in range(length):
-        dataFile = output % i
+        dataFile = dataOut % i
         if os.path.isfile(dataFile):
             continue
         print "Processing minute %s" % i
@@ -108,7 +129,7 @@ def write_frame_data(method, movie, frameOut, dataOut, length, width, duration =
             width)
         frameData = process_frames(method, frameFileNames)
         with open(dataFile, 'w') as out:
-            json.dump(frameData, dataOut)
+            json.dump(frameData, out)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -122,11 +143,12 @@ def main():
         '--method',
         dest='method',
         default='colorweave',
-        help='colortheif|colorcube|colorweave')
+        help='average|colortheif|colorcube|colorweave')
         
     parser.add_argument(
         '--length',
         dest='length',
+        type=int,
         help='Length, in minutes, of the movie')
         
     args = parser.parse_args()
@@ -136,10 +158,10 @@ def main():
     datadir = 'data-' + method
     ensure_dir(framedir)
     ensure_dir(datadir)
-    clear_frames(frameDir)
+    clear_frames(framedir)
     write_frame_data(
         method,
-        args.movie
+        args.movie,
         framedir, 
         os.path.join(datadir, "min_%s.json"),
         args.length,
