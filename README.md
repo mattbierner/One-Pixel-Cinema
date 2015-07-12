@@ -1,10 +1,12 @@
-# One Pixel Cinema
+![](/documentation/average-zoom.png?raw=true)
 
-Simple python scripts for finding the dominant colors in each frame of a video.
+<h1 align="center">One Pixel Cinema</h1>
+
+Simple python scripts for finding the dominant color in each frame of a video.
 
 
 ![](/documentation/eyes-average.png?raw=true "Eyes Wide Shut as a Image")
-<div align="center">Image representation of the dominant color in every frame of <i>Eyes Wide Shut</i></div>
+<div align="center">Image representation of the dominant color in every frame of <i>Eyes Wide Shut</i>.</div>
 
 
 ## Usage
